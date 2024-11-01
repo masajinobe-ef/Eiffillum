@@ -1,6 +1,23 @@
-#include <iostream>
+#include "raylib-cpp.hpp"
 
 int main() {
-  std::cout << "Hello, World!" << std::endl;
+
+  int screenWidth = 800;
+  int screenHeight = 600;
+
+  raylib::Color textColor = raylib::Color::Black();
+  raylib::Window window(screenWidth, screenHeight, "Eiffillum");
+
+  SetTargetFPS(144);
+
+  while (!window.ShouldClose()) {
+
+    BeginDrawing();
+    {
+    }
+
+    EndDrawing();
+  }
+
   return 0;
 }
