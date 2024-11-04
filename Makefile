@@ -1,25 +1,53 @@
-CXX = g++
-CXXFLAGS = -Iinclude -Wall -Wextra
+# Compiler
+CXX = clang++
 
+# Flags
+CXXFLAGS = -Iinclude -Wall -Wextra -pedantic -O2 -pipe
+
+# Packages
 PKGS = raylib raylib-cpp
 LDFLAGS = $(shell pkg-config --libs $(PKGS))
 
+# Const
 SRCS = $(wildcard src/*.cpp)
 OBJS = $(patsubst src/%.cpp, build/%.o, $(SRCS))
-
+HEADERS = $(wildcard include/*.h)
+BUILD_DIR = build
 TARGET = Eiffillum
 
-all: $(TARGET)
+all: $(BUILD_DIR) $(TARGET)
 
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+# Linking
 $(TARGET): $(OBJS)
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
-build/%.o: src/%.cpp
-	mkdir -p build
+# Compiling object files
+$(BUILD_DIR)/%.o: src/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	rm -f build/*.o $(TARGET)
+# Include
+-include $(OBJS:.o=.d)
 
-.PHONY: all clean
+# Rules for deps
+$(BUILD_DIR)/%.d: src/%.cpp
+	$(CXX) $(CXXFLAGS) -M $< > $@
+
+# Clang check
+clang_check:
+	find . -name "*.cpp" | xargs clang-format -style=Google -n
+	find . -name "*.h" | xargs clang-format -style=Google -n
+
+# Clang format
+clang_format: clang_check
+	find . -name "*.cpp" | xargs clang-format -style=Google -i
+	find . -name "*.h" | xargs clang-format -style=Google -i
+
+# Clean
+clean:
+	rm -rf $(BUILD_DIR) $(TARGET)
+
+.PHONY: all clean clang_check clang_format
 
