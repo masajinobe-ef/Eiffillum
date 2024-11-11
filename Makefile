@@ -13,6 +13,7 @@ SRCS = $(wildcard src/*.cpp)
 OBJS = $(patsubst src/%.cpp, build/%.o, $(SRCS))
 HEADERS = $(wildcard include/*.h)
 BUILD_DIR = build
+
 TARGET = Eiffillum
 
 all: $(BUILD_DIR) $(TARGET)
@@ -47,7 +48,7 @@ clang_format: clang_check
 
 # Clean
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET) ./Eiffillum
 
 .PHONY: all clean clang_check clang_format
 
